@@ -1,0 +1,9 @@
+<library path="my_cartesian_velocity_controller">
+  <class name="my_cartesian_velocity_controller/MyCartesianVelocityController"
+         type="my_cartesian_velocity_controller::MyCartesianVelocityController"
+         base_class_type="controller_interface::ControllerInterface">
+    <description>
+      Controleur de vitesse cartésienne custom utilisant Pinocchio.
+    </description>
+  </class>
+</library>
