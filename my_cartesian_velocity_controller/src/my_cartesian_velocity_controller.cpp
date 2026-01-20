@@ -96,6 +96,7 @@ CallbackReturn MyCartesianVelocityController::on_activate(const rclcpp_lifecycle
     msg->angular.y = 0.0;
     msg->angular.z = 0.0;
     input_cmd_.writeFromNonRT(msg);
+    q_init_ = q_;
     return CallbackReturn::SUCCESS;
 }
 
@@ -130,8 +131,17 @@ controller_interface::return_type MyCartesianVelocityController::update(
     double lambda = 0.05; 
     Eigen::MatrixXd J_pinv = J_arm.transpose() * (J_arm * J_arm.transpose() + lambda*lambda * Eigen::MatrixXd::Identity(6,6)).inverse();
 
-    // 6. Calcul q_dot = J_pinv * v_des
-    Eigen::VectorXd q_dot = J_pinv * v_des_;
+    // 5bis. Projecteur de Nullspace pour maintenir la position initiale
+    Eigen::MatrixXd Identity = Eigen::MatrixXd::Identity(7, 7);
+    Eigen::MatrixXd Nullspace_Projector = Identity - (J_pinv * J_arm);
+    double k_null = 1.0; 
+    Eigen::VectorXd q_arm = q_.head(7); 
+    Eigen::VectorXd q_init_arm = q_init_.head(7);
+
+    Eigen::VectorXd q_dot_null = -k_null * (q_arm - q_init_arm);
+
+    // 6. Calcul q_dot 
+    Eigen::VectorXd q_dot = (J_pinv * v_des_) + (Nullspace_Projector * q_dot_null);
 
     // 7. Écrire les commandes (Directement dans la mémoire)
     for (int i = 0; i < num_joints_; ++i) {
