@@ -6,6 +6,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(ament_cmake REQUIRED)
+find_package(ament_index_cpp REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(controller_interface REQUIRED)
 find_package(hardware_interface REQUIRED)
@@ -40,6 +41,7 @@ ament_target_dependencies(my_cartesian_velocity_controller
   rclcpp_lifecycle 
   geometry_msgs    
   realtime_tools
+  ament_index_cpp
 )
 
 pluginlib_export_plugin_description_file(controller_interface plugin_description.xml)
@@ -56,6 +58,11 @@ install(
 install(
   DIRECTORY include/
   DESTINATION include
+)
+
+install(
+  DIRECTORY urdf
+  DESTINATION share/${PROJECT_NAME}
 )
 
 install(

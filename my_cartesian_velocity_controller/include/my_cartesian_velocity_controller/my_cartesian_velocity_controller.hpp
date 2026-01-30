@@ -37,6 +37,8 @@ private:
     Eigen::VectorXd q_init_;   // Position articulaire initiale
     bool model_loaded_ = false;
     std::string urdf_string_;
+    double startup_weight_ = 0.0;
+    bool is_first_update_ = true;
 
     // Communication Temps Réel (Commandesreçues via Topic)
     rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr sub_command_;
